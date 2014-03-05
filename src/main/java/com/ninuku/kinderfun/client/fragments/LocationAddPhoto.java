@@ -6,7 +6,6 @@ package com.ninuku.kinderfun.client.fragments;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Window;
@@ -17,8 +16,14 @@ import com.google.inject.Inject;
 import com.googlecode.gwtphonegap.client.PhoneGap;
 import com.googlecode.gwtphonegap.client.camera.PictureCallback;
 import com.googlecode.gwtphonegap.client.camera.PictureOptions;
+import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
+import com.googlecode.mgwt.dom.client.event.tap.TapHandler;
 import com.googlecode.mgwt.ui.client.MGWT;
-import com.googlecode.mgwt.ui.client.widget.RoundPanel;
+import com.googlecode.mgwt.ui.client.widget.Button;
+import com.googlecode.mgwt.ui.client.widget.FormListEntry;
+import com.googlecode.mgwt.ui.client.widget.MTextArea;
+import com.googlecode.mgwt.ui.client.widget.MTextBox;
+import com.googlecode.mgwt.ui.client.widget.WidgetList;
 import com.ninuku.kinderfun.client.AppResources;
 
 /**
@@ -26,6 +31,21 @@ import com.ninuku.kinderfun.client.AppResources;
  *
  */
 public class LocationAddPhoto extends Composite {
+	/**
+	 * TODO:localize
+	 */
+	private static final String	NEW_DESCRIPTION	= "Description";
+
+	/**
+	 * TODO:localize
+	 */
+	private static final String	NEW_NAME	= "Name";
+
+	/**
+	 * TODO:localize
+	 */
+	private static final String	SUBMIT_A_NEW_PLAYGROUND_BUTTON	= "Submit a new playground";
+
 	/**
 	 * Spielplatz Finder Template
 	 * 
@@ -43,10 +63,17 @@ public class LocationAddPhoto extends Composite {
 
 	static private Template	TEMPLATE	= GWT.create(Template.class);
 
-	private RoundPanel	main;
+	private WidgetList	main;
+	
 	private HTML	desktopCamera;
 
 	private Image	display;
+
+	private Button	submitButton;
+
+	private MTextBox	name;
+
+	private MTextArea	desc;
 
 	/**
 	 * 
@@ -56,8 +83,11 @@ public class LocationAddPhoto extends Composite {
 		logger.fine("new LocationAddPhoto");
 
 		// layout
-		main = new RoundPanel();
+		main = new WidgetList();
+		main.setRound(true);
 
+	
+		// image capture
 		if( MGWT.getOsDetection().isDesktop()) {		
 			main.add( desktopCamera = new HTML());
 			desktopCamera.setHTML(TEMPLATE.content(appResources.styles().camera()));
@@ -71,6 +101,7 @@ public class LocationAddPhoto extends Composite {
 
 				@Override
 				public void onSuccess(String data) {
+					logger.info("showing image");
 					display.setUrl("data:image/jpeg;base64," + data);
 				}
 
@@ -83,6 +114,19 @@ public class LocationAddPhoto extends Composite {
 				}
 			});			
 		}
+		// name capture
+		main.add(new FormListEntry(NEW_NAME, name = new MTextBox()));
+		main.add(new FormListEntry(NEW_DESCRIPTION, desc = new MTextArea()));
+		main.add( submitButton = new Button(SUBMIT_A_NEW_PLAYGROUND_BUTTON));
+		submitButton.addTapHandler(new TapHandler() {
+			
+			@Override
+			public void onTap(TapEvent event) {
+				// TODO: validate input non-empty
+				// TODO: communicate intent to upload with Activity
+				Window.alert("TODO: adding playground " + name.getValue());
+			}
+		});
 
 		initWidget(main);
 

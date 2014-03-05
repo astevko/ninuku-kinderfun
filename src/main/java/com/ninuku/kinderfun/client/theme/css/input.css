@@ -1,5 +1,5 @@
 .mgwt-TextBox {
-	
+	color: black;
 }
 
 .mgwt-PasswordTextBox {
@@ -11,15 +11,15 @@
 }
 
 .mgwt-TextBox .mgwt-InputBox-box {
-	
+	color: black;	
 }
 
 .mgwt-PasswordTextBox .mgwt-InputBox-box {
-	
+	color: black;
 }
 
 .mgwt-TextArea .mgwt-InputBox-box {
-	
+	color: black;
 }
 
 .mgwt-RadioButton {
