@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package com.ninuku.kinderfun.client.activities;
 
 import com.google.gwt.place.shared.Place;
@@ -8,29 +11,27 @@ import com.ninuku.kinderfun.client.activities.tablet.TabletMainActivityMapper;
 import com.ninuku.kinderfun.client.activities.tablet.TabletNavActivityMapper;
 
 /**
- * URL used to get to the home of the application.
- * 
- * @author copyright (c) 2014 Andrew Stevko Registered with ActivityMappers to trigger Activities to start
+ * add location using photo to database 
  * @see AppPlaceHistoryMapper
  * @see PhoneActivityMapper
  * @see TabletMainActivityMapper
  * @see TabletNavActivityMapper
+ * @author copyright (c) 2014 Andrew Stevko
  */
-public class HomePlace extends Place {
+public class LocationAddPhotoPlace extends Place {
 
-	@Prefix("home")
-	public static class Tokenizer implements PlaceTokenizer<HomePlace> {
+	@Prefix("addphoto")
+	public static class Tokenizer implements PlaceTokenizer<LocationAddPhotoPlace> {
 
 		@Override
-		public HomePlace getPlace(final String token) {
-			return new HomePlace();
+		public LocationAddPhotoPlace getPlace(final String token) {
+			return new LocationAddPhotoPlace();
 		}
 
 		@Override
-		public String getToken(final HomePlace place) {
+		public String getToken(final LocationAddPhotoPlace place) {
 			return "";
 		}
 
 	}
-
 }

@@ -15,14 +15,46 @@
  */
 package com.ninuku.kinderfun.client;
 
+import com.google.gwt.inject.client.GinModules;
+import com.google.gwt.inject.client.Ginjector;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
+import com.ninuku.kinderfun.client.activities.phone.PhoneActivityMapper;
+import com.ninuku.kinderfun.client.activities.tablet.TabletMainActivityMapper;
+import com.ninuku.kinderfun.client.activities.tablet.TabletNavActivityMapper;
 
-
-public interface ClientFactory {
+/**
+ * KinderFinder Gin Injector
+ * 
+ * @author copyright (c) 2014 Andrew Stevko
+ */
+@GinModules(GinModule.class)
+public interface ClientFactory extends Ginjector {
+	/**
+	 * access to styles.css
+	 * @return client bundle cssresources
+	 */
+	public AppResources getAppResources();
 
 	public EventBus getEventBus();
 
+	/**
+	 * @return phone activity mapper
+	 */
+	public PhoneActivityMapper getPhoneActivityMapper();
+
+	/**
+	 * @return clientFactory.getPlaceController().goto( new  HomePlace() );
+	 */
 	public PlaceController getPlaceController();
 
+	/**
+	 * @return tablet main activity mapper
+	 */
+	public TabletMainActivityMapper getTableMainActivityMapper();
+
+	/**
+	 * @return tablet navigation activity mapper
+	 */
+	public TabletNavActivityMapper getTabletNavActivityMapper();
 }

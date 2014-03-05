@@ -15,6 +15,8 @@
  */
 package com.ninuku.kinderfun.client;
 
+import java.util.logging.Logger;
+
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -30,55 +32,40 @@ import com.googlecode.mgwt.mvp.client.AnimatingActivityManager;
 import com.googlecode.mgwt.mvp.client.AnimationMapper;
 import com.googlecode.mgwt.ui.client.MGWT;
 import com.googlecode.mgwt.ui.client.MGWTSettings;
+import com.googlecode.mgwt.ui.client.MGWTStyle;
 import com.googlecode.mgwt.ui.client.dialog.TabletPortraitOverlay;
 import com.googlecode.mgwt.ui.client.layout.MasterRegionHandler;
 import com.googlecode.mgwt.ui.client.layout.OrientationRegionHandler;
-
+import com.ninuku.kinderfun.client.activities.phone.PhoneActivityMapper;
+import com.ninuku.kinderfun.client.activities.phone.PhoneAnimationMapper;
+import com.ninuku.kinderfun.client.activities.tablet.TabletMainActivityMapper;
+import com.ninuku.kinderfun.client.activities.tablet.TabletMainAnimationMapper;
+import com.ninuku.kinderfun.client.activities.tablet.TabletNavAnimationMapper;
 import com.ninuku.kinderfun.client.css.AppBundle;
+import com.ninuku.kinderfun.client.theme.CustomTheme;
 
 /**
  * @author Daniel Kurka
- * 
  */
 public class MgwtAppEntryPoint implements EntryPoint {
 
-	private void start() {
-		
-	  //set viewport and other settings for mobile
-    MGWT.applySettings(MGWTSettings.getAppSetting());
-		
-		
+	static private final Logger	logger			= Logger.getLogger(MgwtAppEntryPoint.class.getName());
+	private final ClientFactory	clientFactory	= GWT.create(ClientFactory.class);
 
-		final ClientFactory clientFactory = new ClientFactoryImpl();
+	/**
+	 * create a phone display with a single AnimatingActivityMapper
+	 */
+	private void createPhoneDisplay() {
+		logger.info("createPhoneDisplay()");
+	
+		final AnimatableDisplay display = GWT.create(AnimatableDisplay.class);
 
-		// Start PlaceHistoryHandler with our PlaceHistoryMapper
-		AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
-		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+		final PhoneActivityMapper appActivityMapper = this.clientFactory.getPhoneActivityMapper();
 
-		historyHandler.register(clientFactory.getPlaceController(), clientFactory.getEventBus(), new com.ninuku.kinderfun.client.activities.HomePlace());
+		final PhoneAnimationMapper appAnimationMapper = new PhoneAnimationMapper();
 
-		if ((MGWT.getOsDetection().isTablet())) {
-			// very nasty workaround because GWT does not corretly support
-			// @media
-			StyleInjector.inject(AppBundle.INSTANCE.css().getText());
-
-			createTabletDisplay(clientFactory);
-		} else {
-			createPhoneDisplay(clientFactory);
-
-		}
-		historyHandler.handleCurrentHistory();
-
-	}
-
-	private void createPhoneDisplay(ClientFactory clientFactory) {
-		AnimatableDisplay display = GWT.create(AnimatableDisplay.class);
-
-		PhoneActivityMapper appActivityMapper = new PhoneActivityMapper(clientFactory);
-
-		PhoneAnimationMapper appAnimationMapper = new PhoneAnimationMapper();
-
-		AnimatingActivityManager activityManager = new AnimatingActivityManager(appActivityMapper, appAnimationMapper, clientFactory.getEventBus());
+		final AnimatingActivityManager activityManager = new AnimatingActivityManager(appActivityMapper,
+				appAnimationMapper, this.clientFactory.getEventBus());
 
 		activityManager.setDisplay(display);
 
@@ -86,36 +73,45 @@ public class MgwtAppEntryPoint implements EntryPoint {
 
 	}
 
-	private void createTabletDisplay(ClientFactory clientFactory) {
-		SimplePanel navContainer = new SimplePanel();
+	/**
+	 * 
+	 */
+	private void createTabletDisplay() {
+		logger.info("createTabletDisplay()");
+
+		// ---- Nav container - shown landscape only -----------
+		final SimplePanel navContainer = new SimplePanel();
 		navContainer.getElement().setId("nav");
 		navContainer.getElement().addClassName("landscapeonly");
-		AnimatableDisplay navDisplay = GWT.create(AnimatableDisplay.class);
+		final AnimatableDisplay navDisplay = GWT.create(AnimatableDisplay.class);
 
 		final TabletPortraitOverlay tabletPortraitOverlay = new TabletPortraitOverlay();
 
 		new OrientationRegionHandler(navContainer, tabletPortraitOverlay, navDisplay);
-		new MasterRegionHandler(clientFactory.getEventBus(), "nav", tabletPortraitOverlay);
+		new MasterRegionHandler(this.clientFactory.getEventBus(), "nav", tabletPortraitOverlay);
 
-		ActivityMapper navActivityMapper = new TabletNavActivityMapper(clientFactory);
+		final ActivityMapper navActivityMapper = this.clientFactory.getTabletNavActivityMapper();
 
-		AnimationMapper navAnimationMapper = new TabletNavAnimationMapper();
+		final AnimationMapper navAnimationMapper = new TabletNavAnimationMapper();
 
-		AnimatingActivityManager navActivityManager = new AnimatingActivityManager(navActivityMapper, navAnimationMapper, clientFactory.getEventBus());
+		final AnimatingActivityManager navActivityManager = new AnimatingActivityManager(navActivityMapper,
+				navAnimationMapper, this.clientFactory.getEventBus());
 
 		navActivityManager.setDisplay(navDisplay);
 
 		RootPanel.get().add(navContainer);
 
-		SimplePanel mainContainer = new SimplePanel();
+		// ---- main container ---------
+		final SimplePanel mainContainer = new SimplePanel();
 		mainContainer.getElement().setId("main");
-		AnimatableDisplay mainDisplay = GWT.create(AnimatableDisplay.class);
+		final AnimatableDisplay mainDisplay = GWT.create(AnimatableDisplay.class);
 
-		TabletMainActivityMapper tabletMainActivityMapper = new TabletMainActivityMapper(clientFactory);
+		final TabletMainActivityMapper tabletMainActivityMapper = this.clientFactory.getTableMainActivityMapper();
 
-		AnimationMapper tabletMainAnimationMapper = new TabletMainAnimationMapper();
+		final AnimationMapper tabletMainAnimationMapper = new TabletMainAnimationMapper();
 
-		AnimatingActivityManager mainActivityManager = new AnimatingActivityManager(tabletMainActivityMapper, tabletMainAnimationMapper, clientFactory.getEventBus());
+		final AnimatingActivityManager mainActivityManager = new AnimatingActivityManager(tabletMainActivityMapper,
+				tabletMainAnimationMapper, this.clientFactory.getEventBus());
 
 		mainActivityManager.setDisplay(mainDisplay);
 		mainContainer.setWidget(mainDisplay);
@@ -130,8 +126,8 @@ public class MgwtAppEntryPoint implements EntryPoint {
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 
 			@Override
-			public void onUncaughtException(Throwable e) {
-				//TODO put in your own meaninful handler
+			public void onUncaughtException(final Throwable e) {
+				// TODO put in your own meaninful handler
 				Window.alert("uncaught: " + e.getMessage());
 				e.printStackTrace();
 
@@ -145,6 +141,37 @@ public class MgwtAppEntryPoint implements EntryPoint {
 
 			}
 		}.schedule(1);
+
+	}
+
+	private void start() {
+		
+		// override custom theme
+		MGWTStyle.setTheme (new CustomTheme()); 
+		// local styles come next
+		clientFactory.getAppResources().styles().ensureInjected();
+
+		// set viewport and other settings for mobile
+		MGWT.applySettings(MGWTSettings.getAppSetting());
+
+		// Start PlaceHistoryHandler with our PlaceHistoryMapper
+		final AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
+		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+
+		historyHandler.register(this.clientFactory.getPlaceController(), this.clientFactory.getEventBus(),
+				new com.ninuku.kinderfun.client.activities.HomePlace());
+
+		if ((MGWT.getOsDetection().isTablet())) {
+			// very nasty workaround because GWT does not corretly support
+			// @media
+			StyleInjector.inject(AppBundle.INSTANCE.css().getText());
+
+			createTabletDisplay();
+		} else {
+			createPhoneDisplay();
+
+		}
+		historyHandler.handleCurrentHistory();
 
 	}
 

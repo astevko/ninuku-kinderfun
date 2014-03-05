@@ -17,13 +17,16 @@ package com.ninuku.kinderfun.client;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
-
-import com.ninuku.kinderfun.client.activities.HomePlace.HomePlaceTokenizer;
+import com.ninuku.kinderfun.client.activities.LocationAddPhotoPlace;
+import com.ninuku.kinderfun.client.activities.HomePlace;
+import com.ninuku.kinderfun.client.activities.LocationDetailsPlace;
 
 /**
- * @author Daniel Kurka
- * 
+ * register tokenizers with app place history mapper
  */
-@WithTokenizers({ HomePlaceTokenizer.class })
+@WithTokenizers({ 
+	LocationDetailsPlace.Tokenizer.class, 
+	HomePlace.Tokenizer.class, 
+	LocationAddPhotoPlace.Tokenizer.class })
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 }

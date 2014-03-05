@@ -1,4 +1,4 @@
-package com.ninuku.kinderfun.client;
+package com.ninuku.kinderfun.client.activities.tablet;
 
 import com.google.gwt.place.shared.Place;
 import com.googlecode.mgwt.mvp.client.Animation;
@@ -7,7 +7,7 @@ import com.googlecode.mgwt.mvp.client.AnimationMapper;
 public class TabletMainAnimationMapper implements AnimationMapper {
 
 	@Override
-	public Animation getAnimation(Place oldPlace, Place newPlace) {
+	public Animation getAnimation(final Place oldPlace, final Place newPlace) {
 		return Animation.SLIDE;
 	}
 

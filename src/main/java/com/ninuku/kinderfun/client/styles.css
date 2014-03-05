@@ -1,0 +1,29 @@
+/*******************
+	KinderFun Finder Master Style Sheet
+*******************/
+@CHARSET "UTF-8";
+.mainBase {
+	background-color: white !important;
+	color:black !important;
+}
+
+.tileBase {
+	background-color: grey;
+	color:black;
+}
+.locationName {
+	size: 2.0em;
+	font-weight: bold;
+}
+.locationDesc {
+	size: 1.0em;
+	font-weight: normal;
+}
+.locationListEntry {
+	background: light-grey
+}
+.headerButton {
+}
+/** add photo body **/
+.camera {	
+}
